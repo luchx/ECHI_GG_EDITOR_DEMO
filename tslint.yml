@@ -1,0 +1,16 @@
+defaultSeverity: warning
+extends:
+  - tslint-react
+  - tslint-eslint-rules
+  - tslint-config-prettier
+jsRules:
+rules:
+  eofline: true
+  no-console: true
+  no-construct: true
+  no-debugger: true
+  no-reference: true
+  no-trailing-whitespace: false
+  jsx-no-multiline-js: false
+  jsx-alignment: false
+  jsx-no-lambda: false
