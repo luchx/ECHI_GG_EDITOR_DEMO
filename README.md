@@ -15,13 +15,11 @@ npm install --save gg-editor
 
 下面我们快速进入开发，首先上 github 上把项目拉取到本地 [https://github.com/alibaba/GGEditor](https://github.com/alibaba/GGEditor)，我们将它自带的 Demo 作为模版，在此基础上进行开发。
 
-
-![](https://user-gold-cdn.xitu.io/2019/12/12/16ef9204dff1d4dc?w=651&h=356&f=png&s=22560)
+![image](https://user-images.githubusercontent.com/17548394/70695372-87913c00-1cfc-11ea-9672-4a2813b82137.png)
 
 执行命令 yarn run start 后启动效果图
 
-
-![](https://user-gold-cdn.xitu.io/2019/12/12/16ef920d1099e60b?w=800&h=467&f=png&s=163428)
+![image](https://user-images.githubusercontent.com/17548394/70695398-95df5800-1cfc-11ea-8577-2368715b9586.png)
 
 下面我们对项目进行改造
 
@@ -687,7 +685,7 @@ export default MindToolbar;
 
 ## 三、最终效果图
 
-![](https://user-gold-cdn.xitu.io/2019/12/12/16ef924f213f6afe?w=746&h=376&f=png&s=29101)
+![image](https://user-images.githubusercontent.com/17548394/70695426-a394dd80-1cfc-11ea-887f-172df719f93e.png)
 
 ## 四、参考链接
 
