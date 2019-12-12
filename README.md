@@ -1,24 +1,48 @@
-GG-Editor 是基于 G6-Editor 进行二次封装的一款可视化操作应用框架，不过目前相关的使用说明文档太稀少了，没有一个完整的项目应用案例，还有就是核心代码 gg-editor-core 没有开源，那么今天就教大家如何基于 GG-Editor 开发一款脑图应用。
-一、介绍
+> GG-Editor 是基于 G6-Editor 进行二次封装的一款可视化操作应用框架，不过目前相关的使用说明文档太稀少了，没有一个完整的项目应用案例，还有就是核心代码 gg-editor-core 没有开源，那么今天就教大家如何基于 GG-Editor 开发一款脑图应用。
+
+## 一、介绍
+
 本项目是基于 GG-Editor 进行开发的脑图应用，基本上是一个较为完整的应用了，可以说已经预先给你们把坑填好了，另外本项目所有代码基本可以很快速的实现一个流程图应用，因为基本的 API 使用上是相同的。
 另外，本文不会过多的讲述官方文档有的内容，会注重于使用上。
-二、使用
+
+## 二、使用
+
 安装和使用 GG-Editor 可直接通过 npm 或 yarn 安装依赖
+
+```js
 npm install --save gg-editor
-下面我们快速进入开发，首先上 github 上把项目拉取到本地 https://github.com/alibaba/GGEditor，我们将它自带的 Demo 作为模版，在此基础上进行开发。
+```
+
+下面我们快速进入开发，首先上 github 上把项目拉取到本地 [https://github.com/alibaba/GGEditor](https://github.com/alibaba/GGEditor)，我们将它自带的 Demo 作为模版，在此基础上进行开发。
+
+
+![](https://user-gold-cdn.xitu.io/2019/12/12/16ef9204dff1d4dc?w=651&h=356&f=png&s=22560)
+
 执行命令 yarn run start 后启动效果图
+
+
+![](https://user-gold-cdn.xitu.io/2019/12/12/16ef920d1099e60b?w=800&h=467&f=png&s=163428)
+
 下面我们对项目进行改造
-1. 自定义节点
-官方文档： http://ggeditor.com/docs/api/registerNode.en-US.html
-在 components 文件夹下新增 `EditorCustomNode/index.jsx`
+
+### 1. 自定义节点
+
+官方文档： [http://ggeditor.com/docs/api/registerNode.en-US.html](http://ggeditor.com/docs/api/registerNode.en-US.html)
+
+在 `components` 文件夹下新增 `EditorCustomNode/index.jsx`
+
+```js
 import React, { Fragment } from 'react';
 import { RegisterNode } from 'gg-editor';
+
 import PLUS_URL from '@/assets/plus.svg';
 import MINUS_URL from '@/assets/minus.svg';
 import CATE_URL from '@/assets/docs.svg';
 import CASE_URL from '@/assets/file.svg';
+
 const ICON_SIZE = 16;
 const COLLAPSED_ICON = 'node-inner-icon';
+
 function getRectPath(x: string | number, y: any, w: number, h: number, r: number) {
   if (r) {
     return [
@@ -34,27 +58,36 @@ function getRectPath(x: string | number, y: any, w: number, h: number, r: number
       ['z'],
     ];
   }
+
   const res = [['M', x, y], ['l', w, 0], ['l', 0, h], ['l', -w, 0], ['z']];
+
   res.toString = toString;
+
   return res;
 }
+
 class EditorCustomNode extends React.Component {
   render() {
     const config = {
       // 绘制标签
       // drawLabel(item) {
       // },
+
       // 绘制图标
       afterDraw(item) {
         const model = item.getModel();
         const group = item.getGraphicGroup();
+
         const label = group.findByClass('label')[0];
         const labelBox = label.getBBox();
+
         const { width } = labelBox;
         const { height } = labelBox;
         const x = -width / 2;
         const y = -height / 2;
+
         const { type, collapsed, children } = model;
+
         // 折叠状态图标
         if (type === 'cate' && children && children.length > 0) {
           group.addShape('image', {
@@ -80,17 +113,20 @@ class EditorCustomNode extends React.Component {
           },
         });
       },
+
       // 对齐标签
       adjustLabelPosition(item, labelShape) {
         const size = this.getSize(item);
         const padding = this.getPadding(item);
         const width = size[0];
         const labelBox = labelShape.getBBox();
+
         labelShape.attr({
           x: -width / 2 + padding[3],
           y: -labelBox.height / 2,
         });
       },
+
       // 内置边距
       // [上, 右, 下, 左]
       getPadding(item) {
@@ -101,25 +137,32 @@ class EditorCustomNode extends React.Component {
         }
         return [12, 8, 12, 38];
       },
+
       // 标签尺寸
       // [宽, 高]
       getSize(item) {
         const group = item.getGraphicGroup();
+
         const label = group.findByClass('label')[0];
         const labelBox = label.getBBox();
+
         const padding = this.getPadding(item);
+
         return [
           labelBox.width + padding[1] + padding[3],
           labelBox.height + padding[0] + padding[2],
         ];
       },
+
       // 节点路径
       // x, y, w, h, r
       getPath(item) {
         const size = this.getSize(item);
         const style = this.getStyle(item);
+
         return getRectPath(-size[0] / 2, -size[1] / 2, size[0] + 4, size[1], style.radius);
       },
+
       // 节点样式
       getStyle(item) {
         return {
@@ -128,6 +171,7 @@ class EditorCustomNode extends React.Component {
           lineWidth: 1,
         };
       },
+
       // 标签样式
       getLabelStyle(item) {
         return {
@@ -136,12 +180,14 @@ class EditorCustomNode extends React.Component {
           fontSize: 16,
         };
       },
+
       // 激活样式
       getActivedStyle(item) {
         return {
           stroke: '#096dd9',
         };
       },
+
       // 选中样式
       getSelectedStyle(item) {
         return {
@@ -149,6 +195,7 @@ class EditorCustomNode extends React.Component {
         };
       },
     };
+
     return (
       <Fragment>
         <RegisterNode name="mind-base" config={config} extend="mind-base" />
@@ -157,9 +204,15 @@ class EditorCustomNode extends React.Component {
     );
   }
 }
+
 export default EditorCustomNode;
+```
+
 修改 Mind 文件夹下新增并新增如下代码
+
+```js
 import EditorCustomNode from '../components/EditorCustomNode';
+
 <Mind data={data} className={styles.mind}
 // rootShape 自定义根节点
 // rootShape="custom-root"
@@ -168,11 +221,18 @@ secondSubShape="custom-node"
 />
 {/* 自定义节点 */}
 <EditorCustomNode />
-2. 自定义快捷事件
-官方文档：http://ggeditor.com/docs/api/registerCommand.en-US.html
-在 components 文件夹下新增 `EditorCommand/index.jsx`
+```
+
+### 2. 自定义快捷事件
+
+官方文档：[http://ggeditor.com/docs/api/registerCommand.en-US.html](http://ggeditor.com/docs/api/registerCommand.en-US.html)
+
+在 `components` 文件夹下新增 `EditorCommand/index.jsx`
+
+```js
 import React from 'react';
 import { RegisterCommand } from 'gg-editor';
+
 function addNodeCall(editor, node, id, type) {
   const graph = editor.getGraph();
   const model = node.getModel();
@@ -187,12 +247,14 @@ function addNodeCall(editor, node, id, type) {
     nth: currentNode ? graph.getNth(currentNode) : void 0,
   });
 }
+
 class CustomCommand extends React.Component {
   componentDidMount() {
     document.addEventListener('keydown', event => {
       event.preventDefault();
     });
   }
+
   render() {
     return [
       // Enter 添加同级 case
@@ -506,9 +568,15 @@ class CustomCommand extends React.Component {
     ];
   }
 }
+
 export default CustomCommand;
-修改 Mind 文件夹下新增并新增如下代码
+```
+
+修改 `Mind` 文件夹下新增并新增如下代码
+
+```js
 import EditorCommand from '@/component/EditorCommand';
+
 <Mind
   className={styles.mind}
   data={mindData}
@@ -516,12 +584,12 @@ import EditorCommand from '@/component/EditorCommand';
   firstSubShape="custom-node"
   secondSubShape="custom-node"
   graph={{
-        // renderer: 'svg',
-        fitView: 'cc', // 画布显示位置，cc为水平垂直居中显示
-        // animate: true,
-    }}
-    // 注册快捷键
-    shortcut={{
+		// renderer: 'svg',
+		fitView: 'cc', // 画布显示位置，cc为水平垂直居中显示
+		// animate: true,
+	}}
+	// 注册快捷键
+	shortcut={{
       append: false,
       appendChild: false,
       collaspeExpand: false,
@@ -532,17 +600,25 @@ import EditorCommand from '@/component/EditorCommand';
       customCollapseExpand: true, // ⌘ + B 折叠 / 展开
       customExpand: true, // ⌘ + B / Ctrl + B 展开
       customCollapse: true, // ⌘ + B / Ctrl + B 折叠
-    }}
+	}}
 />
+
 {/* 自定义快捷事件 */}
 <EditorCommand />
-3. 自定义右键菜单
-官方文档：http://ggeditor.com/docs/api/contextMenu.en-US.html
-修改 EditorContextMenu 下的 MindContextMenu.js 文件
+```
+
+### 3. 自定义右键菜单
+
+官方文档：[http://ggeditor.com/docs/api/contextMenu.en-US.html](http://ggeditor.com/docs/api/contextMenu.en-US.html)
+
+修改 `EditorContextMenu` 下的 `MindContextMenu.js` 文件
+
+```js
 import React from 'react';
 import { NodeMenu, CanvasMenu, ContextMenu } from 'gg-editor';
 import MenuItem from './MenuItem';
 import styles from './index.less';
+
 const MindContextMenu = () => (
   <ContextMenu className={styles.contextMenu}>
     <NodeMenu>
@@ -564,15 +640,23 @@ const MindContextMenu = () => (
     </CanvasMenu>
   </ContextMenu>
 );
+
 export default MindContextMenu;
-4. 自定义工具条
-官方文档：http://ggeditor.com/docs/api/toolbar.en-US.html
-修改 EditorToolbar 下的 MindToolbar.js 文件
+```
+
+### 4. 自定义工具条
+
+官方文档：[http://ggeditor.com/docs/api/toolbar.en-US.html](http://ggeditor.com/docs/api/toolbar.en-US.html)
+
+修改 `EditorToolbar` 下的 `MindToolbar.js` 文件
+
+```js
 import React from 'react';
 import { Divider } from 'antd';
 import { Toolbar } from 'gg-editor';
 import ToolbarButton from './ToolbarButton';
 import styles from './index.less';
+
 const MindToolbar = () => (
   <Toolbar className={styles.toolbar}>
     <ToolbarButton command="undo" text="⌘ + Z 撤销" />
@@ -597,6 +681,16 @@ const MindToolbar = () => (
     <ToolbarButton command="customExpand" icon="expand" text="⌘ + B / Ctrl + B 展开" />
   </Toolbar>
 );
+
 export default MindToolbar;
-三、最终效果图
-常见问题: https://github.com/gaoli/GGEditor/issues/130
+```
+
+## 三、最终效果图
+
+![](https://user-gold-cdn.xitu.io/2019/12/12/16ef924f213f6afe?w=746&h=376&f=png&s=29101)
+
+## 四、参考链接
+
+• 项目地址：[https://github.com/luchx/ECHI_GG_EDITOR_DEMO](https://github.com/luchx/ECHI_GG_EDITOR_DEMO)
+
+• 常见问题： [https://github.com/gaoli/GGEditor/issues/130](https://github.com/gaoli/GGEditor/issues/130)
