@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Row, Col, Button, message } from 'antd';
+import { Util } from '@antv/g6';
 import GGEditor, { Mind } from 'gg-editor';
 import EditorMinimap from '@/components/EditorMinimap';
 import EditorCommand from '@/components/EditorCommand';
@@ -113,6 +114,18 @@ function handleFormatSave(originChildren = [], rootChildren = []) {
   return [...addNodes, ...originNodes];
 }
 
+// 此处由于 mouseMove 事件特殊性，只能定义为全局变量
+let startMatrix: any[] = [];
+let startPoint: any = {};
+let isMouseActived: boolean = false;
+
+// 重置锚点状态
+function resetStatus() {
+  startMatrix = [];
+  startPoint = {};
+  isMouseActived = false;
+}
+
 export default () => {
   const [originData, setOriginData] = useState();
   const [mindData, setMindData] = useState();
@@ -123,6 +136,7 @@ export default () => {
     const { shape } = event;
     const { graph, model } = item;
     const { type, children, collapsed } = model;
+    // 点击区域：非 case 节点、存在下级节点、折叠图标区域
     if (
       type === 'case' ||
       (children && children.length === 0) ||
@@ -153,6 +167,37 @@ export default () => {
     console.log('保存数据 ======>', formatData);
   }, [originData]);
 
+  const handleMouseDown = useCallback((event: any) => {
+    const { item, domEvent } = event;
+    const { editor } = MindRef.current;
+    const currentPage = editor.getCurrentPage();
+    const graph = currentPage.getGraph();
+    if (item) {
+      return;
+    }
+    isMouseActived = true;
+    startMatrix = Util.clone(graph.getMatrix());
+    startPoint = {
+      clientX: domEvent.clientX,
+      clientY: domEvent.clientY,
+    };
+  }, []);
+
+  const handleMouseMove = useCallback((event: any) => {
+    const { domEvent } = event;
+    const { editor } = MindRef.current;
+    const currentPage = editor.getCurrentPage();
+    const graph = currentPage.getGraph();
+    if (!isMouseActived) {
+      return;
+    }
+    const dx = domEvent.clientX - startPoint.clientX;
+    const dy = domEvent.clientY - startPoint.clientY;
+    const matrix = Util.clone(startMatrix);
+    Util.mat3.translate(matrix, matrix, [dx, dy]);
+    graph.updateMatrix(matrix);
+  }, []);
+
   useEffect(() => {
     const listener = e => {
       e.preventDefault();
@@ -172,7 +217,7 @@ export default () => {
       : null;
     setOriginData(mockData);
     setMindData(rootsData);
-  }, [mockData]);
+  }, []);
 
   if (!mindData) {
     return null;
@@ -199,8 +244,16 @@ export default () => {
             firstSubShape="custom-node"
             secondSubShape="custom-node"
             onNodeClick={handleNodeClick}
+            onMouseDown={handleMouseDown}
+            onMouseUp={() => {
+              resetStatus();
+            }}
+            onMouseLeave={() => {
+              resetStatus();
+            }}
+            onMouseMove={handleMouseMove}
             graph={{
-              // renderer: 'svg',
+              renderer: 'svg',
               fitView: 'cc', // 画布显示位置，cc为水平垂直居中显示
               // animate: true,
             }}
@@ -211,9 +264,9 @@ export default () => {
               collaspeExpand: false,
               customAppendCase: true, // Enter 添加同级 case
               customAppendChildCase: true, // Tab 添加下级 case
-              customAppendCate: true, // ⌘ + N 添加同级 cate
-              customAppendChildCate: true, // ⌘ + ⇧ + N 添加下级 cate
-              customCollapseExpand: true, // ⌘ + B 折叠 / 展开
+              customAppendCate: true, // ⌘ + ⇩ / Ctrl + ⇩ 添加同级 cate
+              customAppendChildCate: true, // ⌘ + ➩ / Ctrl + ➩ 添加下级 cate
+              customCollapseExpand: true, // ⌘ + B / Ctrl + B 展开
               customExpand: true, // ⌘ + B / Ctrl + B 展开
               customCollapse: true, // ⌘ + B / Ctrl + B 折叠
             }}

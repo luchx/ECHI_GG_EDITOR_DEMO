@@ -17,11 +17,11 @@ const MindToolbar = () => (
     <ToolbarButton command="customAppendCase" icon="append" text="Enter 添加同级 case" />
     <ToolbarButton command="customAppendChildCase" icon="append-child" text="Tab 添加下级 case" />
     <Divider type="vertical" />
-    <ToolbarButton command="customAppendCate" icon="append" text="⌘ + N 添加同级 cate" />
+    <ToolbarButton command="customAppendCate" icon="append" text="⌘ + ⇩ / Ctrl + ⇩ 添加同级 cate" />
     <ToolbarButton
       command="customAppendChildCate"
       icon="append-child"
-      text="⌘ + ⇧ + N 添加下级 cate "
+      text="⌘ + ➩ / Ctrl + ➩ 添加下级 cate"
     />
     <Divider type="vertical" />
     <ToolbarButton command="customCollapse" icon="collapse" text="⌘ + B / Ctrl + B 折叠" />

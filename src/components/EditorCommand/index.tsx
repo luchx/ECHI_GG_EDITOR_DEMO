@@ -17,12 +17,6 @@ function addNodeCall(editor: any, node: any, id: string, type: string) {
 }
 
 class CustomCommand extends React.Component {
-  componentDidMount() {
-    document.addEventListener('keydown', event => {
-      event.preventDefault();
-    });
-  }
-
   render() {
     return [
       // Enter 添加同级 case
@@ -109,16 +103,16 @@ class CustomCommand extends React.Component {
             (addNode = node.isRoot
               ? addNodeCall(currentPage, node, this.addItemId, 'case')
               : graph.add('node', {
-                  id: this.addItemId,
-                  parent: node.id,
-                  label: '新建节点',
-                  type: 'case',
-                })),
+                id: this.addItemId,
+                parent: node.id,
+                label: '新建节点',
+                type: 'case',
+              })),
               currentPage.clearSelected(),
               currentPage.clearActived(),
               currentPage.setSelected(addNode, true),
               this.executeTimes === 1 &&
-                ((this.selectedItemId = node.id),
+              ((this.selectedItemId = node.id),
                 (this.addItemId = addNode.id),
                 currentPage.beginEditLabel(addNode));
           },
@@ -132,7 +126,7 @@ class CustomCommand extends React.Component {
           shortcutCodes: ['Tab'],
         }}
       />,
-      // ⌘ + N 添加同级 cate
+      // ⌘ + ⇩ / Ctrl + ⇩ 添加同级 cate
       <RegisterCommand
         key="customAppendCate"
         name="customAppendCate"
@@ -174,7 +168,7 @@ class CustomCommand extends React.Component {
               currentPage.clearActived(),
               currentPage.setSelected(addNode, true),
               this.executeTimes === 1 &&
-                ((this.selectedItemId = node.id),
+              ((this.selectedItemId = node.id),
                 (this.addItemId = addNode.id),
                 currentPage.beginEditLabel(addNode));
           },
@@ -185,10 +179,13 @@ class CustomCommand extends React.Component {
               currentPage.clearActived(),
               currentPage.setSelected(this.selectedItemId, true);
           },
-          shortcutCodes: ['metaKey', 'n'],
+          shortcutCodes: [
+            ['metaKey', 'ArrowDown'],
+            ['ctrlKey', 'ArrowDown'],
+          ],
         }}
       />,
-      // ⌘ + ⇧ + N 添加下级 cate
+      // ⌘ + ➩ / Ctrl + ➩ 添加下级 cate
       <RegisterCommand
         key="customAppendChildCate"
         name="customAppendChildCate"
@@ -216,16 +213,16 @@ class CustomCommand extends React.Component {
             (addNode = node.isRoot
               ? addNodeCall(currentPage, node, this.addItemId, 'cate')
               : graph.add('node', {
-                  id: this.addItemId,
-                  parent: node.id,
-                  label: '新建节点',
-                  type: 'cate',
-                })),
+                id: this.addItemId,
+                parent: node.id,
+                label: '新建节点',
+                type: 'cate',
+              })),
               currentPage.clearSelected(),
               currentPage.clearActived(),
               currentPage.setSelected(addNode, true),
               this.executeTimes === 1 &&
-                ((this.selectedItemId = node.id),
+              ((this.selectedItemId = node.id),
                 (this.addItemId = addNode.id),
                 currentPage.beginEditLabel(addNode));
           },
@@ -236,7 +233,10 @@ class CustomCommand extends React.Component {
               currentPage.clearActived(),
               currentPage.setSelected(this.selectedItemId, true);
           },
-          shortcutCodes: ['metaKey', 'shiftKey', 'N'],
+          shortcutCodes: [
+            ['metaKey', 'ArrowRight'],
+            ['ctrlKey', 'ArrowRight'],
+          ],
         }}
       />,
       // ⌘ + B 折叠 / 展开
@@ -264,16 +264,16 @@ class CustomCommand extends React.Component {
             const node = this.getItem(editor);
             node.getModel().collapsed
               ? (graph.update(node, {
-                  collapsed: false,
-                }),
+                collapsed: false,
+              }),
                 node.getInnerEdges &&
-                  node.getInnerEdges().forEach(editor => {
-                    editor.update();
-                  }),
+                node.getInnerEdges().forEach(editor => {
+                  editor.update();
+                }),
                 (this.toCollapsed = false))
               : (graph.update(node, {
-                  collapsed: true,
-                }),
+                collapsed: true,
+              }),
                 (this.toCollapsed = true)),
               currentPage.clearSelected(),
               currentPage.setSelected(node, true),
@@ -285,11 +285,11 @@ class CustomCommand extends React.Component {
             const node = this.getItem(editor);
             this.toCollapsed
               ? graph.update(node, {
-                  collapsed: false,
-                })
+                collapsed: false,
+              })
               : graph.update(node, {
-                  collapsed: true,
-                }),
+                collapsed: true,
+              }),
               currentPage.clearSelected(),
               currentPage.setSelected(node, true);
           },
