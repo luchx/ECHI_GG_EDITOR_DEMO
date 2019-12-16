@@ -77,33 +77,30 @@ function getOriginItem(item: NodeType): NodeType {
 }
 
 function handleFormatSave(originChildren = [], rootChildren = []) {
-  const originCode = originChildren.reduce((arr: string[], next: NodeType) => {
-    if (next.code) {
-      arr.push(next.code);
-    }
-    return arr;
-  }, []);
-  const addNodes = rootChildren.reduce((arr: NodeType[], next: NodeType) => {
-    if (!next.code || !originCode.includes(next.code)) {
-      const node: any = getOriginItem(next);
+  // 新增节点：指不存在 code 值，或不在原始节点位置的 node
+  const addNodes = rootChildren.reduce((arr: NodeType[], root: NodeType) => {
+    // 原始节点
+    const originNode = originChildren.find((origin: NodeType) => origin.code === root.code);
+    if (!root.code || !originNode) {
+      const node: NodeType = getOriginItem(root);
       arr.push(node);
     }
     return arr;
   }, []);
-  const rootCode = rootChildren.reduce((arr: string[], next: NodeType) => {
-    if (next.code) {
-      arr.push(next.code);
-    }
-    return arr;
-  }, []);
+
   const originNodes: any = [];
-  originChildren.forEach((item: NodeType) => {
-    let children: any = item.children || [];
-    const originItem = getOriginItem(item);
-    if (!rootCode.includes(item.code)) {
+  originChildren.forEach((origin: NodeType) => {
+    let { children } = origin;
+    // 原始数据的树节点
+    const rootNode = rootChildren.find((root: NodeType) => origin.code === root.code);
+    // 优先匹配树节点数据
+    const currentItem: any = rootNode || origin;
+    const originItem = getOriginItem(currentItem);
+    // 如果不存在该节点说明已被删除，添加 isDeleted 标志
+    if (!rootNode) {
       originItem.isDeleted = true;
     } else {
-      const currentItem: any = rootChildren.find((root: NodeType) => item.code === root.code);
+      // 存在且有子级
       children = handleFormatSave(children, currentItem.children);
     }
     originNodes.push({
