@@ -686,9 +686,3 @@ export default MindToolbar;
 ## 三、最终效果图
 
 ![image](https://user-images.githubusercontent.com/17548394/70695426-a394dd80-1cfc-11ea-887f-172df719f93e.png)
-
-## 四、参考链接
-
-• 项目地址：[https://github.com/luchx/ECHI_GG_EDITOR_DEMO](https://github.com/luchx/ECHI_GG_EDITOR_DEMO)
-
-• 常见问题： [https://github.com/gaoli/GGEditor/issues/130](https://github.com/gaoli/GGEditor/issues/130)
