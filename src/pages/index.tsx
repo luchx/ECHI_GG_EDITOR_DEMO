@@ -136,11 +136,7 @@ export default () => {
     const { shape } = event;
     const { graph, model } = item;
     const { type, children, collapsed } = model;
-    const { editor } = MindRef.current;
-    const currentPage = editor.getCurrentPage();
-    currentPage.clearSelected();
-    currentPage.clearActived();
-    currentPage.setSelected(item, true);
+
     // 点击区域：非 case 节点、存在下级节点、折叠图标区域
     if (
       type === 'case' ||
