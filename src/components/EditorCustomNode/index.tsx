@@ -39,7 +39,7 @@ class EditorCustomNode extends React.Component {
             attrs: {
               img: collapsed ? PLUS_URL : MINUS_URL,
               x: x - 24,
-              y: y - 2,
+              y: type === 'cate' ? y : y + 2,
               width: ICON_SIZE,
               height: ICON_SIZE,
               style: 'cursor: pointer',
@@ -51,7 +51,7 @@ class EditorCustomNode extends React.Component {
           attrs: {
             img: type === 'cate' ? CATE_URL : CASE_URL,
             x: children && children.length > 0 ? x + 4 : x - 12,
-            y: y - 2,
+            y: type === 'cate' ? y : y + 2,
             width: ICON_SIZE,
             height: ICON_SIZE,
           },
