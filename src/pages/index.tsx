@@ -242,19 +242,19 @@ export default () => {
             firstSubShape="custom-node"
             secondSubShape="custom-node"
             onNodeClick={handleNodeClick}
-            onMouseDown={handleMouseDown}
-            onMouseUp={() => {
-              resetStatus();
-            }}
-            onMouseLeave={() => {
-              resetStatus();
-            }}
-            onMouseMove={handleMouseMove}
-            graph={{
-              renderer: 'svg',
-              fitView: 'cc', // 画布显示位置，cc为水平垂直居中显示
-              // animate: true,
-            }}
+            // onMouseDown={handleMouseDown}
+            // onMouseUp={() => {
+            //   resetStatus();
+            // }}
+            // onMouseLeave={() => {
+            //   resetStatus();
+            // }}
+            // onMouseMove={handleMouseMove}
+            // graph={{
+            //   renderer: 'svg',
+            //   fitView: 'cc', // 画布显示位置，cc为水平垂直居中显示
+            //   // animate: true,
+            // }}
             // 注册快捷键
             shortcut={{
               append: false,
