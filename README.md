@@ -685,4 +685,6 @@ export default MindToolbar;
 
 ## 三、最终效果图
 
+[![Edit gg-editor-demo](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/gg-editor-demo-9nvui?fontsize=14&hidenavigation=1&theme=dark)
+
 ![image](https://user-images.githubusercontent.com/17548394/70695426-a394dd80-1cfc-11ea-887f-172df719f93e.png)
